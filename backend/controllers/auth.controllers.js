@@ -26,6 +26,7 @@ export const signup = async (req, res) => {
 		if (newUser) {
 			genTokenAndSetCookie(newUser._id, res);
 			await newUser.save();
+			console.log(newUser);
 			res.status(201).json({
 				_id: newUser._id,
 				fullName: newUser.fullName,
@@ -45,9 +46,11 @@ export const login = async (req, res) => {
 	try {
 		const { username, password } = req.body;
 		const user = await User.findOne({ username });
-		const isPasswordSame = bcrypt.compare(password, user?.password || "");
+		console.log(user);
+		const isPasswordSame = await bcrypt.compare(password, user?.password || "");
+		console.log(isPasswordSame);
 		if (!user || !isPasswordSame) {
-			res.send(400).json({ error: "Incorrect Username or Password" });
+			return res.status(400).json({ error: "Incorrect Username or Password" });
 		}
 		genTokenAndSetCookie(user._id, res);
 		res.status(201).json({
