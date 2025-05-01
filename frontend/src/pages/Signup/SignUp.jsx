@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import GenderComponent from "./GenderComponent";
 import { Link } from "react-router-dom";
+import useSignup from "../../hooks/useSignup";
 
 const SignUp = () => {
 	const [inputs, setInputs] = useState({
@@ -10,10 +11,11 @@ const SignUp = () => {
 		confirmPassword: "",
 		gender: "",
 	});
-
-	const handleSubmit = (e) => {
+	const { loading, signUp } = useSignup();
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		console.log(inputs);
+		// console.log(inputs);
+		await signUp(inputs);
 	};
 
 	const onGenderChange = (gender) => {
@@ -83,7 +85,13 @@ const SignUp = () => {
 						selectedGender={inputs.gender}
 					/>
 					<div className="mt-1 justify-between">
-						<button className="btn btn-sm mt-2 w-40">Signup</button>
+						<button className="btn btn-sm mt-2 w-40" disabled={loading}>
+							{loading ? (
+								<span className="loading loading-spinner loading-xs"></span>
+							) : (
+								"SignUp"
+							)}
+						</button>
 						<Link
 							to="/login"
 							className="ml-3 text-sm hover:underline hover:text-yellow-300 mt-3 inline-block"
